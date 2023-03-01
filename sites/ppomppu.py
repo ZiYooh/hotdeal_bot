@@ -185,6 +185,31 @@ def run_scraping(_webhook, _mode, _category, _keyword):
 							logger.info(f'키워드 알림 발송: {user_set_keyword}')
 							time.sleep(1)
 
+				# ck(혹은 kc) 모드 (설정 키워드 or 카테고리의 새 글)
+				if _mode == 'ck' or _mode == 'kc':
+					keyword_list = _keyword.split(',')
+					category_list = _category.split(',')
+
+					# 설정 키워드 확인
+					for i in range(0, len(keyword_list)):
+						# 문자열 좌우 공백 존재시 제거
+						user_set_keyword = keyword_list[i].strip()
+
+						if user_set_keyword in hotdeal_info.get_title():
+							temp_msg = hotdeal_info.get_webhook_msg_keyword(user_set_keyword)
+							logger.info(f'키워드 알림 발송: {user_set_keyword}')
+							time.sleep(1)
+
+					# 설정 카테고리 확인
+					for i in range(0, len(category_list)):
+						# 문자열 좌우 공백 존재시 제거
+						user_set_category = category_list[i].strip()
+
+						if user_set_category in hotdeal_info.get_category():
+							temp_msg = hotdeal_info.get_webhook_msg_category(user_set_category)
+							logger.info(f'카테고리 알림 발송: {user_set_category}')
+							time.sleep(1)
+							
 				# 웹훅 클래스 생성 및 메세지 전송
 				webhook_conf = mywebhook.WebhookConf(_webhook)
 				webhook_conf.send_webhook_msg(temp_msg)

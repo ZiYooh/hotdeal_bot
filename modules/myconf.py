@@ -55,7 +55,7 @@ class HotdealConf:
 		# a = 모든 새글
 		# c = 카테고리
 		# k = 키워드
-		if self.conf_mode != 'a' and self.conf_mode != 'c' and self.conf_mode != 'k':
+		if self.conf_mode != 'a' and self.conf_mode != 'c' and self.conf_mode != 'k' and self.conf_mode != 'ck' and self.conf_mode != 'kc': 
 			logger.error("MODE 설정값이 잘못되었습니다.")
 			logger.error("기본 설정값(a)으로 동작합니다.")
 			self.conf_mode = 'a'
