@@ -10,9 +10,8 @@ logger = mylogger.set_logger()
 sys.excepthook = mylogger.handle_exception
 # Logger Setting End
 
-# 웹훅 설정
-# discord_webhook = "https://discord.com/api/webhooks/1075046487630827574/ez_0w17k2oGmpIH68ZpwjW0q4rlajweHXuZyNMQ4Vh5dRLIcPKzTF-L6S8OW-eAIbYui"
 
+# 웹훅 설정
 class WebhookConf:
 	def __init__(self, url):
 		logger.debug("웹훅 클래스 생성")

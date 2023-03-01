@@ -4,6 +4,8 @@ import os
 import sys
 import requests
 import sqlite3
+import psutil
+import atexit
 
 from bs4 import BeautifulSoup
 from sqlite3 import OperationalError
@@ -21,6 +23,11 @@ logger = mylogger.set_logger()
 sys.excepthook = mylogger.handle_exception
 
 
+def handle_exit(_webhook, _exit_msg):
+	webhook_conf = mywebhook.WebhookConf(_webhook)
+	webhook_conf.send_webhook_msg(_exit_msg)
+
+	
 if __name__ == "__main__":
 	try:
 		con = sqlite3.connect("./temp_list.db", isolation_level=None)
@@ -44,6 +51,17 @@ if __name__ == "__main__":
 	index = 1
 	
 	hotdeal_conf = myconf.HotdealConf()
+	
+	cur_pid = os.getpid()
+	cur_ppid = psutil.Process(os.getpid()).ppid()
+	
+	ps_start_msg = f"프로세스 시작 [PID={cur_pid} | PPID={cur_ppid}]"
+	ps_end_msg = f"프로세스 종료 [PID={cur_pid} | PPID={cur_ppid}]"
+	webhook_conf = mywebhook.WebhookConf(hotdeal_conf.get_webhook())
+	webhook_conf.send_webhook_msg(ps_start_msg)
+	del webhook_conf
+	
+	atexit.register(handle_exit, hotdeal_conf.get_webhook(), ps_end_msg)
 	
 	while 1:
 		logger.info(f"{index} 회차 루프중")
