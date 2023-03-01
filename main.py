@@ -30,8 +30,9 @@ def handle_exit(_webhook, _exit_msg):
 
 	
 if __name__ == "__main__":
+	con = sqlite3.connect("./temp_list.db", isolation_level=None)
+	
 	try:
-		con = sqlite3.connect("./temp_list.db", isolation_level=None)
 		cursor = con.cursor()
 		cursor.execute(
 			  "CREATE TABLE arca_list (\
@@ -45,22 +46,11 @@ if __name__ == "__main__":
 				  PRIMARY KEY (num)\
 				);"
 		  )
-		
-		cursor.execute(
-			  "CREATE TABLE ruli_list (\
-				  num INT NOT NULL,\
-				  category VARCHAR(512),\
-				  title VARCHAR(512),\
-				  link VARCHAR(512),\
-				  PRIMARY KEY (num)\
-				);"
-		  )
 		cursor.close()
 	except OperationalError:
 		pass
 
 	try:
-		con = sqlite3.connect("./temp_list.db", isolation_level=None)
 		cursor = con.cursor()
 		cursor.execute(
 			  "CREATE TABLE ruli_list (\
@@ -75,6 +65,20 @@ if __name__ == "__main__":
 	except OperationalError:
 		pass
 	
+	try:
+		cursor = con.cursor()
+		cursor.execute(
+			  "CREATE TABLE ppom_list (\
+				  num INT NOT NULL,\
+				  category VARCHAR(512),\
+				  title VARCHAR(512),\
+				  link VARCHAR(512),\
+				  PRIMARY KEY (num)\
+				);"
+		  )
+		cursor.close()
+	except OperationalError:
+		pass
 	index = 1
 	
 	hotdeal_conf = myconf.HotdealConf()
@@ -103,6 +107,12 @@ if __name__ == "__main__":
 						)
 		
 		ruliweb.run_scraping(hotdeal_conf.get_webhook(),
+						  	hotdeal_conf.get_mode(),
+						  	hotdeal_conf.get_category(),
+							hotdeal_conf.get_keyword()
+						)
+		
+		ppomppu.run_scraping(hotdeal_conf.get_webhook(),
 						  	hotdeal_conf.get_mode(),
 						  	hotdeal_conf.get_category(),
 							hotdeal_conf.get_keyword()
