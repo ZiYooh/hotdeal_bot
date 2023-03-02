@@ -16,6 +16,7 @@ from modules import myutil
 from modules import myconf
 
 from sites import arca
+from sites import ruliweb
 from sites import ppomppu
 
 # 로거 설정
@@ -29,8 +30,9 @@ def handle_exit(_webhook, _exit_msg):
 
 	
 if __name__ == "__main__":
+	con = sqlite3.connect("./temp_list.db", isolation_level=None)
+	
 	try:
-		con = sqlite3.connect("./temp_list.db", isolation_level=None)
 		cursor = con.cursor()
 		cursor.execute(
 			  "CREATE TABLE arca_list (\
@@ -48,8 +50,38 @@ if __name__ == "__main__":
 	except OperationalError:
 		pass
 
+	try:
+		cursor = con.cursor()
+		cursor.execute(
+			  "CREATE TABLE ruli_list (\
+				  num INT NOT NULL,\
+				  category VARCHAR(512),\
+				  title VARCHAR(512),\
+				  link VARCHAR(512),\
+				  PRIMARY KEY (num)\
+				);"
+		  )
+		cursor.close()
+	except OperationalError:
+		pass
+	
+	try:
+		cursor = con.cursor()
+		cursor.execute(
+			  "CREATE TABLE ppom_list (\
+				  num INT NOT NULL,\
+				  category VARCHAR(512),\
+				  title VARCHAR(512),\
+				  link VARCHAR(512),\
+				  PRIMARY KEY (num)\
+				);"
+		  )
+		cursor.close()
+	except OperationalError:
+		pass
 	index = 1
 	
+	myconf.check_conf_file()
 	hotdeal_conf = myconf.HotdealConf()
 	
 	cur_pid = os.getpid()
@@ -73,6 +105,18 @@ if __name__ == "__main__":
 						  hotdeal_conf.get_mode(),
 						  hotdeal_conf.get_category(),
 						  hotdeal_conf.get_keyword()
+						)
+		
+		ruliweb.run_scraping(hotdeal_conf.get_webhook(),
+						  	hotdeal_conf.get_mode(),
+						  	hotdeal_conf.get_category(),
+							hotdeal_conf.get_keyword()
+						)
+		
+		ppomppu.run_scraping(hotdeal_conf.get_webhook(),
+						  	hotdeal_conf.get_mode(),
+						  	hotdeal_conf.get_category(),
+							hotdeal_conf.get_keyword()
 						)
 		index += 1
         
