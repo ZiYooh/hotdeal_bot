@@ -81,6 +81,7 @@ if __name__ == "__main__":
 		pass
 	index = 1
 	
+	myconf.check_conf_file()
 	hotdeal_conf = myconf.HotdealConf()
 	
 	cur_pid = os.getpid()
