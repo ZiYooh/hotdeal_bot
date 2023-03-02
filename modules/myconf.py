@@ -121,26 +121,3 @@ def check_conf_file():
 		logger.error("!! setting.conf 파일이 존재하지 않습니다.")
 		logger.error("!! main.py와 같은 경로에 위치하여야 합니다.")
 		return -1
-	
-	#TODO
-	if os.path.isfile('./setting.conf'):
-		with open('setting.conf', 'r') as file:    # setting.conf 파일을 읽기 모드(r)로 열기
-			line = None    # 변수 line을 None으로 초기화
-			
-			while line != '':
-				line = file.readline().strip('\n')
-				
-				if 'WEBHOOK=' in line:
-					self.conf_webhook = line.split('=')[1]
-
-				if 'INTERVAL=' in line:
-					self.conf_interval = line.split('=')[1]
-
-				if 'MODE=' in line:
-					self.conf_mode = line.split('=')[1]
-
-				if 'CATEGORY=' in line:
-					self.conf_category = line.split('=')[1]	
-
-				if 'KEYWORD=' in line:
-					self.conf_keyword = line.split('=')[1]
