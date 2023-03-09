@@ -18,6 +18,7 @@ from modules import myconf
 from sites import arca
 from sites import ruliweb
 from sites import ppomppu
+from sites import quasar
 
 # 로거 설정
 logger = mylogger.set_logger()
@@ -79,6 +80,23 @@ if __name__ == "__main__":
 		cursor.close()
 	except OperationalError:
 		pass
+	
+	try:
+		cursor = con.cursor()
+		cursor.execute(
+			  "CREATE TABLE quasar_list (\
+				  num INT NOT NULL,\
+				  category VARCHAR(512),\
+				  title VARCHAR(512),\
+				  price VARCHAR(512),\
+				  link VARCHAR(512),\
+				  PRIMARY KEY (num)\
+				);"
+		  )
+		cursor.close()
+	except OperationalError:
+		pass
+	
 	index = 1
 	
 	myconf.check_conf_file()
@@ -118,6 +136,13 @@ if __name__ == "__main__":
 						  	hotdeal_conf.get_category(),
 							hotdeal_conf.get_keyword()
 						)
+		
+		quasar.run_scraping(hotdeal_conf.get_webhook(),
+						  	hotdeal_conf.get_mode(),
+						  	hotdeal_conf.get_category(),
+							hotdeal_conf.get_keyword()
+						)
+		
 		index += 1
         
 		time.sleep(hotdeal_conf.get_interval())
